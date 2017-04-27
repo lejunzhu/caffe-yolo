@@ -110,7 +110,7 @@ class CaffeScaleLayer(CaffeLayerGenerator):
 
 class CaffeReluLayer(CaffeLayerGenerator):
     def __init__(self, name, negslope=None):
-        super(CaffeReluLayer, self).__init__(name, 'Relu')
+        super(CaffeReluLayer, self).__init__(name, 'ReLU')
         self.negslope = negslope
     def write(self, f):
         param_str = ""
@@ -201,7 +201,10 @@ class CaffeProtoGenerator:
     def add_relu_layer(self, items):
         prev_blob = self.layer.top[0]
         lname = "relu"+str(self.lnum)
-        self.layer = CaffeReluLayer( lname )
+        neg = None
+        if items['activation'] == 'leaky':
+            neg = 0.1
+        self.layer = CaffeReluLayer( lname, negslope = neg )
         self.layer.bottom.append( prev_blob )
         self.layer.top.append( prev_blob )     # loopback
         self.add_layer( self.layer )
