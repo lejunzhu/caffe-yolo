@@ -160,7 +160,7 @@ class CaffeProtoGenerator:
         ksize = items['size'] if 'size' in items else None
         stride = items['stride'] if 'stride' in items else None
         pad = items['pad'] if 'pad' in items else None
-        bias = not bool(items['batch_normalize']) if 'batch_normalize' in items else True
+        bias = not bool(items['batch_normalize'] != '0') if 'batch_normalize' in items else True
         self.layer = CaffeConvolutionLayer( lname, filters, ksize=ksize, stride=stride, pad=pad, bias=bias )
         self.layer.bottom.append( prev_blob )
         self.layer.top.append( lname )
@@ -255,7 +255,7 @@ def convert(cfgfile, ptxtfile):
         batchnorm_followed = False
         relu_followed = False
         items = dict(parser.items(section))
-        if 'batch_normalize' in items and items['batch_normalize']:
+        if 'batch_normalize' in items and items['batch_normalize'] != '0':
             batchnorm_followed = True
         if 'activation' in items and items['activation'] != 'linear':
             relu_followed = True
